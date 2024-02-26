@@ -1,10 +1,20 @@
-import config
-import telebot
+import logging
 
-bot = telebot.TeleBot(config.TOKEN)
-@bot.message_handler(content_types=["text"])
+from aiogram import Bot, types, Dispatcher
+import asyncio
 
-def repeat_all_messages(message):
-    bot.send_message(message.chat.id, message.text)
+from config import TOKEN
 
-bot.polling(none_stop=True)
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+@dp.message()
+async def echo_message(msg: types.Message):
+    await msg.answer(text=msg.text)
+
+async def main():
+    logging.basicConfig(level=logging.DEBUG)
+    await dp.start_polling(bot)
+
+if __name__ == '__main__':
+    asyncio.run(main())
